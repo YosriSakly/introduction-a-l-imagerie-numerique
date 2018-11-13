@@ -34,9 +34,10 @@ def weight_map_construction(images_tuple):
     # Intialize weight maps to zero
     dims = images_tuple[0].shape
     nims = len(images_tuple)
+    nchannels = images_tuple[0].shape[-1]
     weight_maps = [np.zeros(dims, dtype=int) for i in range(0, nims)]
     # Loop over color channels (we have one weight map per channel)
-    for channel in range(0, 3):
+    for channel in range(0, nchannels):
         # Initialize weigh map for the channel
         concat = np.zeros((dims[0], dims[1], nims))
         # Concatenate the nims to a 3d array so as to apply argmax along axis 2
@@ -123,8 +124,10 @@ weight_maps = weight_map_construction(saliency_tuple)
 # Vizualize weight map, we multiply by 255 to distinguish the pixel equal to 1 from those equal to 0
 plt.figure()
 plt.imshow(255 * weight_maps[0])
+plt.title("Weight map 1 for base")
 plt.figure()
 plt.imshow(255 * weight_maps[1])
+plt.title("Weight map 1 for details")
 
 # Refined weight maps using guided filtering
 eps1 = 0.1
