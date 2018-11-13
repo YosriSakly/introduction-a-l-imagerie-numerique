@@ -46,8 +46,18 @@ def weight_map_operator(images_tuple):
         argmax = np.argmax(concat, axis=2)
         # Use that information to fill the weight maps
         for i in range(0, nims):
+            # Get the indicator for each pixel and fill the corresponding arrays
             weight_maps[i][:, :, channel] = (argmax == i).astype(int)
     return weight_maps
+
+
+def refined_weight_maps(guides_tuple, images_tuple, r, eps):
+    nims = len(images_tuple)
+    outputs = []
+    for i in range(0, nims):
+        filtered = cv2.ximgproc.guidedFilter(cv2.convertScaleAbs(guides_tuple[i]), images_tuple[i], r, eps)
+        outputs.append(filtered)
+    return tuple(outputs)
 
 
 ##################### Loadings and other prerequisites #############################################################
@@ -87,4 +97,16 @@ saliency_tuple = saliency_maps(images, lapsize, rg, sigmag)
 # Get the weight maps
 weight_maps = weight_map_operator(saliency_tuple)
 # Vizualize weight map, we multiply by 255 to distinguish the pixel equal to 1 from those equal to 0
+plt.figure()
 plt.imshow(255 * weight_maps[0])
+plt.figure()
+plt.imshow(255 * weight_maps[1])
+
+
+# Refined weight maps using guided filtering
+eps1 = 0.1
+r1 = 10
+refined_wm_basis = refined_weight_maps(weight_maps, basis_tuple, r1, eps1)
+eps2 = 0.1
+r2 = 10
+refined_wm_details = refined_weight_maps(weight_maps, details_tuple, r2, eps2)
