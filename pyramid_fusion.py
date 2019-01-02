@@ -52,16 +52,32 @@ def build_gaussian_pyramids(images_tuple, levels):
 
 def gaussian_to_laplacian_pyramids(gaussian_pyramids):
     levels = len(gaussian_pyramids[0]) - 1
-    pyramids = [[gaussian_pyramids[0][-1]], [gaussian_pyramids[1][-1]]]
-    for i in range(levels, 0, -1):
-        GE1 = cv2.pyrUp(gaussian_pyramids[0][i])
-        GE2 = cv2.pyrUp(gaussian_pyramids[1][i])
-        L1 = cv2.subtract(gaussian_pyramids[0][i - 1], GE1)
-        L2 = cv2.subtract(gaussian_pyramids[1][i - 1], GE2)
-        pyramids[0].append(L1)
-        # pyramids[0].reverse()
-        pyramids[1].append(L2)
-        # pyramids[1].reverse()
+    # pyramids = [[gaussian_pyramids[0][-1]], [gaussian_pyramids[1][-1]]]
+    # for i in range(levels, 1, -1):
+    #     GE1 = cv2.pyrUp(gaussian_pyramids[0][i])
+    #     GE2 = cv2.pyrUp(gaussian_pyramids[1][i])
+    #     L1 = cv2.subtract(gaussian_pyramids[0][i - 1], GE1)
+    #     L2 = cv2.subtract(gaussian_pyramids[1][i - 1], GE2)
+    #     pyramids[0].append(L1)
+    #     # pyramids[0].reverse()
+    #     pyramids[1].append(L2)
+    #     # pyramids[1].reverse()
+    first = True
+    for i in range(levels):
+        GE1 = cv2.pyrUp(gaussian_pyramids[0][i + 1])
+        GE2 = cv2.pyrUp(gaussian_pyramids[1][i + 1])
+        L1 = cv2.subtract(gaussian_pyramids[0][i], GE1)
+        L2 = cv2.subtract(gaussian_pyramids[1][i], GE2)
+        # L1 = gaussian_pyramids[0][i] - GE1
+        # L2 = gaussian_pyramids[0][i] - GE2
+        if first:
+            first = False
+            pyramids = [[L1], [L2]]
+        else:
+            pyramids[0].append(L1)
+            pyramids[1].append(L2)
+    pyramids[0].append(gaussian_pyramids[0][-1])
+    pyramids[1].append(gaussian_pyramids[1][-1])
     return pyramids
 
 
@@ -150,16 +166,23 @@ def fuse_pyramids(pyramids_list, kernel_size, kernel_coef):
         fused.append(fuse_pyramid_not_last((pyramids_list[0][i], pyramids_list[1][i]), kernel_coef))
     return fused
 
+#
+# def reconstruct(fused_pyramids):
+#     ls_ = np.array(fused_pyramids[0], dtype=np.uint8)
+#     for i in range(1, len(fused_pyramids)):
+#         ls_ = cv2.pyrUp(ls_)
+#         ls_ = cv2.add(ls_, np.array(fused_pyramids[i], dtype=np.uint8))
+#     return ls_
+
+
 
 def reconstruct(fused_pyramids):
-    ls_ = np.array(fused_pyramids[0], dtype=np.uint8)
-    for i in range(1, len(fused_pyramids)):
-        ls_ = cv2.pyrUp(ls_)
-        ls_ = cv2.add(ls_, np.array(fused_pyramids[i], dtype=np.uint8))
-    return ls_
-
-
-
-
-
+    levels = len(fused_pyramids) - 1
+    LS = np.array(fused_pyramids[-1], dtype=np.uint8)
+    for i in range(1, levels + 1):
+        LS = cv2.pyrUp(LS)
+        print(levels - i)
+        LS = cv2.add(LS, np.array(fused_pyramids[levels - i], dtype=np.uint8))
+        # LS = np.array((LS + fused_pyramids[levels - i]), dtype=np.uint8)
+    return LS
 

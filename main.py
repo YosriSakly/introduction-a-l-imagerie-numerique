@@ -13,24 +13,50 @@ import images_fusion
 
 ##################### Loadings and other prerequisites #############################################################
 
+# # Path to the data
+# imgs = []
+# path = os.getcwd() + "/Data/set4"
+#
+# # Load images from the path with different focus
+#
+# valid_images = [".jpg", ".png", ".gif"]
+# for f in os.listdir(path):
+#     ext = os.path.splitext(f)[1]
+#     if ext.lower() not in valid_images:
+#         continue
+#     if ext.lower() == ".gif":
+#         ## Read the gif from disk to `RGB`s using `imageio.miread`
+#
+#         gif = Image.open((os.path.join(path, f)))
+#         imgs.append(np.array(gif.convert('RGB')))
+#     else:
+#         imgs.append(cv2.imread(os.path.join(path, f)))
+# images = tuple(imgs)
+# # Plot them
+# for i in range(len(images)):
+#     cv2.imshow("image " + str(i + 1), images[i])
+#     # cv2.waitKey(0);
+#     # cv2.destroyAllWindows();
+#     # cv2.waitKey(1)
+#
+#
+#
+# alignMTB = cv2.createAlignMTB()
+# alignMTB.process(imgs, imgs)
+
+
 # Path to the data
 imgs = []
-path = os.getcwd() + "/Data/set4"
+path = os.getcwd() + "/Data/rose"
 
 # Load images from the path with different focus
 
-valid_images = [".jpg", ".png", ".gif"]
+valid_images = [".jpg", ".png"]
 for f in os.listdir(path):
     ext = os.path.splitext(f)[1]
     if ext.lower() not in valid_images:
         continue
-    if ext.lower() == ".gif":
-        ## Read the gif from disk to `RGB`s using `imageio.miread` 
-
-        gif = Image.open((os.path.join(path, f)))
-        imgs.append(np.array(gif.convert('RGB')))
-    else:
-        imgs.append(cv2.imread(os.path.join(path, f)))
+    imgs.append(cv2.imread(os.path.join(path, f)))
 images = tuple(imgs)
 # Plot them
 for i in range(len(images)):
@@ -38,11 +64,6 @@ for i in range(len(images)):
     # cv2.waitKey(0);
     # cv2.destroyAllWindows();
     # cv2.waitKey(1)
-
-
-
-alignMTB = cv2.createAlignMTB()
-alignMTB.process(imgs, imgs)
 
 # Convert to grayscale
 images = [cv2.cvtColor(img, cv2.COLOR_BGR2GRAY) for img in images]

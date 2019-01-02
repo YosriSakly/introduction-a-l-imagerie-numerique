@@ -73,7 +73,9 @@ for i in range(len(images)):
 imgs_gray = [cv2.cvtColor(img, cv2.COLOR_BGR2GRAY) for img in images]
 
 # Number of levels
-levels = 5
+levels = 4
+
+
 
 # Set size of images to avoid problems in Laplacian pyramids computations
 imgs_gray = pyramid_fusion.adapt_number_of_pixels(imgs_gray, levels)
@@ -82,9 +84,15 @@ imgs_gray = pyramid_fusion.adapt_number_of_pixels(imgs_gray, levels)
 gaussian_pyramids = pyramid_fusion.build_gaussian_pyramids(imgs_gray, levels)
 laplacian_pyramids = pyramid_fusion.gaussian_to_laplacian_pyramids(gaussian_pyramids)
 
+# Reconstruct test
+reconstructed = pyramid_fusion.reconstruct(laplacian_pyramids[0])
+cv2.imshow("Reconstruction test", reconstructed)
+cv2.imshow("Original", imgs_gray[0])
+
 # Fuse pyramids
 fused_pyramids = pyramid_fusion.fuse_pyramids(laplacian_pyramids, kernel_size=5, kernel_coef=30)
 
 # Reconstruct
 fused_image = pyramid_fusion.reconstruct(fused_pyramids)
-cv2.imshow("Fused image", fused_image)
+fused_equalized = cv2.equalizeHist(fused_image)
+cv2.imshow("Fused image", fused_equalized)
