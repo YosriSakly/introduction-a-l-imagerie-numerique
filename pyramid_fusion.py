@@ -1,6 +1,7 @@
 import cv2
 from skimage import morphology
 from skimage.filters.rank import entropy
+from skimage.exposure import cumulative_distribution
 import numpy as np
 
 
@@ -52,24 +53,13 @@ def build_gaussian_pyramids(images_tuple, levels):
 
 def gaussian_to_laplacian_pyramids(gaussian_pyramids):
     levels = len(gaussian_pyramids[0]) - 1
-    # pyramids = [[gaussian_pyramids[0][-1]], [gaussian_pyramids[1][-1]]]
-    # for i in range(levels, 1, -1):
-    #     GE1 = cv2.pyrUp(gaussian_pyramids[0][i])
-    #     GE2 = cv2.pyrUp(gaussian_pyramids[1][i])
-    #     L1 = cv2.subtract(gaussian_pyramids[0][i - 1], GE1)
-    #     L2 = cv2.subtract(gaussian_pyramids[1][i - 1], GE2)
-    #     pyramids[0].append(L1)
-    #     # pyramids[0].reverse()
-    #     pyramids[1].append(L2)
-    #     # pyramids[1].reverse()
     first = True
     for i in range(levels):
         GE1 = cv2.pyrUp(gaussian_pyramids[0][i + 1])
         GE2 = cv2.pyrUp(gaussian_pyramids[1][i + 1])
-        L1 = cv2.subtract(gaussian_pyramids[0][i], GE1)
-        L2 = cv2.subtract(gaussian_pyramids[1][i], GE2)
-        # L1 = gaussian_pyramids[0][i] - GE1
-        # L2 = gaussian_pyramids[0][i] - GE2
+        L1 = gaussian_pyramids[0][i] - GE1
+        L2 = gaussian_pyramids[1][i] - GE2
+
         if first:
             first = False
             pyramids = [[L1], [L2]]
@@ -81,40 +71,9 @@ def gaussian_to_laplacian_pyramids(gaussian_pyramids):
     return pyramids
 
 
-# def regional_entropies(images_tuple, width, height):
-#     rect = morphology.rectangle(width, height)
-#     nchannels = images_tuple[0].shape[-1]
-#     entropies = []
-#     for img in images_tuple:
-#         channelwise = []
-#         for channel in range(nchannels):
-#             channelwise.append(entropy(img[:, :, channel], rect))
-#         entropies.append(channelwise)
-#     return [entropy(img, rect) for img in images_tuple]
-#
-
-
 def regional_entropies(images_tuple, kernel_size):
     rect = morphology.rectangle(kernel_size, kernel_size)
     return [entropy(img, rect) for img in images_tuple]
-#
-#
-# def regional_var(img, width, height):
-#     nx = img.shape[0]
-#     ny = img.shape[1]
-#     vars = np.zeros((nx, ny))
-#     w = width // 2
-#     h = height // 2
-#     for i in range(nx):
-#         for j in range(ny):
-#             sub = img[max(0, i - h): min(nx, i + h),
-#                   max(0, j - w): min(ny, j + w)]
-#             vars[i, j] = sub.var()
-#     return vars
-#
-#
-# def regional_vars(images_tuple, width, height):
-#     return [regional_var(img, width, height) for img in images_tuple]
 
 
 def regional_var(img, kernel_size):
@@ -166,15 +125,6 @@ def fuse_pyramids(pyramids_list, kernel_size, kernel_coef):
         fused.append(fuse_pyramid_not_last((pyramids_list[0][i], pyramids_list[1][i]), kernel_coef))
     return fused
 
-#
-# def reconstruct(fused_pyramids):
-#     ls_ = np.array(fused_pyramids[0], dtype=np.uint8)
-#     for i in range(1, len(fused_pyramids)):
-#         ls_ = cv2.pyrUp(ls_)
-#         ls_ = cv2.add(ls_, np.array(fused_pyramids[i], dtype=np.uint8))
-#     return ls_
-
-
 
 def reconstruct(fused_pyramids):
     levels = len(fused_pyramids) - 1
@@ -182,7 +132,6 @@ def reconstruct(fused_pyramids):
     for i in range(1, levels + 1):
         LS = cv2.pyrUp(LS)
         print(levels - i)
-        LS = cv2.add(LS, np.array(fused_pyramids[levels - i], dtype=np.uint8))
-        # LS = np.array((LS + fused_pyramids[levels - i]), dtype=np.uint8)
+        # LS = cv2.add(LS, np.array(fused_pyramids[levels - i], dtype=np.uint8))
+        LS = np.array((LS + fused_pyramids[levels - i]), dtype=np.uint8)
     return LS
-
