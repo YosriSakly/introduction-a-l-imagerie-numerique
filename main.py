@@ -1,17 +1,6 @@
-import cv2
-import numpy as np
-import matplotlib.pyplot as plt
-import os, os.path
-import scipy.ndimage
-from PIL import Image
-import importlib
-
+import os.path
 import utils
-import images_fusion
 
-
-
-##################### Loadings and other prerequisites #############################################################
 
 # Path to the data
 path = os.getcwd() + "/Data/rose"
@@ -28,9 +17,9 @@ rg = 5
 sigmag = 5
 # Refined weight maps using guided filtering parameters
 eps1 = 0.1
-r1 = 7
+r1 = 47
 eps2 = 1
-r2 =7
+r2 =2
 
 fused = utils.fuse_images(images, avg_size, lapsize, rg, sigmag, eps1, r1, eps2, r2, plot=True)
 

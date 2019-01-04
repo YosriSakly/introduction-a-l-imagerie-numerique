@@ -74,6 +74,7 @@ def get_ssim_mat(img1, img2, K1, K2, kernel_size=7):
     C2 = (255 * K2) ** 2
     ssim_mat = ((2 * mu1 * mu2 + C1) * (2 * cov + C2)) / ((mu1 ** 2 + mu2 ** 2 + C1) * (var1 + var2 + C2))
     lambda_mat = var1 / (var1 + var2)
+    np.place(lambda_mat, lambda_mat == np.nan, 0.5)
     return ssim_mat, lambda_mat
 
 
