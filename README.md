@@ -9,6 +9,11 @@ Both libraries can be installed using pip:
 $pip install opencv-python
 $pip install opencv-contrib-python
 ```
+We alsos use the the library **Pillow** for gif support. This is optionnal if one does not want to use gif input format. Else it can be installed using pip:  
+
+```
+$pip install Pillow
+```
 
 ## Main functionnalities  
 ***Supported formats are jpg, png and gif***  
