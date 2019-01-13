@@ -15,6 +15,9 @@ We alsos use the the library **Pillow** for gif support. This is optionnal if on
 $pip install Pillow
 ```
 
+For the rest this code relies on standard python libraries and standard python scientific libraries: **numpy** and **scipy**.  
+
+
 ## Main functionnalities  
 ***Supported formats are jpg, png and gif***  
 
