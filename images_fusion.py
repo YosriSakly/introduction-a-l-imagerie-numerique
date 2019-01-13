@@ -26,8 +26,8 @@ def basis_details_decomposition(images_tuple, avg_size=31):
 def saliency_maps(images_tuple, lapsize, rg, sigmag):
     saliency_list = []
     for im in images_tuple:
-        # laplacian = abs(cv2.Laplacian(im, cv2.CV_64F))
-        laplacian = abs(cv2.Sobel(im, cv2.CV_64F, 0, 1, ksize=1))
+        laplacian = abs(cv2.Laplacian(im, cv2.CV_64F))
+        # laplacian = abs(cv2.Sobel(im, cv2.CV_64F, 0, 1, ksize=1))
         saliency = cv2.GaussianBlur(laplacian, (2 * rg + 1, 2 * rg + 1), sigmag)
         saliency_list.append(saliency)
         s = np.array(saliency_list) + 1e-12

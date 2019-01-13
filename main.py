@@ -16,10 +16,10 @@ lapsize = 1
 rg = 5
 sigmag = 5
 # Refined weight maps using guided filtering parameters
-eps1 = 0.1
-r1 = 47
-eps2 = 1
-r2 =2
+eps1 = 0.3
+r1 = 45
+eps2 = 1e-5
+r2 =7
 
 fused = utils.fuse_images(images, avg_size, lapsize, rg, sigmag, eps1, r1, eps2, r2, plot=True)
 

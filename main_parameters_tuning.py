@@ -22,7 +22,7 @@ importlib.reload(metrics)
 
 
 # Path to the data
-path = os.getcwd() + "/Data/clock"
+path = os.getcwd() + "/Data/rose"
 
 # Load images
 images = utils.load_images(path, gray=True, align=False)
@@ -35,13 +35,13 @@ lapsize = 1
 rg = 5
 sigmag = 5
 # Refined weight maps using guided filtering parameters
-eps1 = 0.1
-r1 = 47
-eps2 = 0.01
-r2 = 2
+eps1 = 0.3
+r1 = 3
+eps2 = 10e-6
+r2 = 3
 
 fused = utils.fuse_images(images, avg_size, lapsize, rg, sigmag, eps1, r1, eps2, r2, plot=True)
-misc.imsave(os.getcwd() + "/Clock_Fused.png", fused)
+misc.imsave(os.getcwd() + "/Rose_Fused_Params.png", fused)
 
 # ############################## 3D PARAMETER SELECTION EXAMPLE #######################################################
 r1_grid = np.arange(1, 50)
@@ -67,8 +67,8 @@ ax.plot_surface(R1, R2, Z, cmap=cm.coolwarm, linewidth=0, antialiased=False)
 ax.set_xlabel("$r_1$", labelpad=20)
 ax.set_ylabel("$r_2$", labelpad=20)
 ax.set_zlabel("$Q_{SSIM}$", labelpad=10)
-# plt.title("Selection of $r_1$ and $r_2$ with $\epsilon_1 = 0.1$ and $\epsilon_2 = 1")
-plt.title("Selection of $r_1$ and $r_2$ with $\epsilon_1 = 0.1$ and $\epsilon_2 = 1$")
+# plt.title("Selection of $r_1$ and $r_2$ with $\epsilon_1 = 0.3$ and $\epsilon_2 = 1")
+plt.title("Selection of $r_1$ and $r_2$ with $\epsilon_1 = 0.3$ and $\epsilon_2 = 10^{-6}$")
 
 
 

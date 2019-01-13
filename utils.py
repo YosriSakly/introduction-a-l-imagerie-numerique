@@ -57,6 +57,11 @@ def fuse_images(images, avg_size=31, lapsize=1, rg=5, sigmag=5, eps1=0.1, r1=7, 
     # Refined weight maps using guided filtering
     refined_wm_basis = images_fusion.refined_weight_maps(weight_maps, images, r1, eps1)
     refined_wm_details = images_fusion.refined_weight_maps(weight_maps, images, r2, eps2)
+    if plot:
+        for i in range(len(images)):
+            cv2.imshow("Refined weight map (Basis) " + str(i + 1), refined_wm_basis[i] * 255)
+        for i in range(len(images)):
+            cv2.imshow("Refined weight map (Details) " + str(i + 1), refined_wm_details[i] * 255)
     # Normalization of weight maps
     refined_normalized_bases = images_fusion.weight_maps_normalization(refined_wm_basis)
     refined_normalized_details = images_fusion.weight_maps_normalization(refined_wm_details)
