@@ -9,3 +9,14 @@ Both libraries can be installed using pip:
 $pip install opencv-python
 $pip install opencv-contrib-python
 ```
+
+## Main functionnalities
+
+### 1/ Image fusion using guided filtering
+In **main.py**, just change the **path** variable to the folder with the images to fuse and then run the script.
+*This method works for any number of possibly colored images*
+
+### 2/ Image fusion with Laplacian pyramids
+In **main_laplacian.py** just change the **path** variable to the folder with the images to fuse and then run the script.
+*This method works for two images in grayscale*
+
